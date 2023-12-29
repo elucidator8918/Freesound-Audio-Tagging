@@ -243,8 +243,9 @@ def main():
     'Rain': '43023d54.wav',
     'Singing': '43f2168e.wav',
     'Crowd Noises': '44044585.wav'}
-  uploaded_file = st.file_uploader("Upload Audio File", type=['wav'])
   selected_file = st.selectbox("Select a sample file", list(sample_files.keys()))
+  uploaded_file = st.file_uploader("Upload Audio File", type=['wav'])
+  
 
   if uploaded_file is not None:
       audio_bytes = uploaded_file.read()
