@@ -275,8 +275,8 @@ def main():
                 result = pd.DataFrame({top_five_labels[i]: top_five_probabilities[i] for i in range(5)}, index=[0])
 
                 # 🌟 Presenting the prophecy as a magnificent DataFrame!
-                st.markdown("### Predicted Labels and Their Mysterious Probabilities")
-                st.table(result)
+                st.markdown("### Predicted Labels and Their Probabilities")
+                st.markdown(result.to_markdown())
             finally:
                 os.remove(X)
 
