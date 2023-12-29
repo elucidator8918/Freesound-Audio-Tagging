@@ -1,5 +1,7 @@
 import numpy as np
 import pandas as pd
+import os
+import uuid
 from sklearn.metrics import label_ranking_average_precision_score
 import tensorflow as tf
 from tensorflow.keras.metrics import Metric
@@ -136,7 +138,7 @@ def process(clip, clip_dir=None):
     """
     # Decode WAV clip into waveform tensor.   
     #form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.read_file(clip))[0])
-    form_wave = tf.squeeze(tf.audio.decode_wav(clip)[0])
+    form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.decode_wav(clip).audio))
     # Convert waveform into spectrogram using a Short-Time Fourier Transform.
     # Note that tf.signal.stft() uses a periodic Hann window by default.
     window_length_samples = int(round(config.sampling_rate * config.stft_window_seconds))
