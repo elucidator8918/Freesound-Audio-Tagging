@@ -243,12 +243,12 @@ def main():
 
   if uploaded_file is not None:
       audio_bytes = uploaded_file.read()
-      st.audio(audio_bytes, format='audio/wav')
 
       if st.button('Predict'):    
         X = f"{uuid.uuid4()}.wav"
         with open(X, 'wb') as audio_file:
             audio_file.write(audio_bytes)
+        st.audio(audio_file.read(), format='audio/wav')
         features = process(X)
         model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
         prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
