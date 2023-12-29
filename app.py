@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import os
 from pydub import AudioSegment
+from io import BytesIO
 import uuid
 from sklearn.metrics import label_ranking_average_precision_score
 import tensorflow as tf
@@ -244,7 +245,7 @@ def main():
 
   if uploaded_file is not None:
       audio_bytes = uploaded_file.read()
-      audio = AudioSegment.from_file(audio_bytes, format="wav")
+      audio = AudioSegment.from_file(BytesIO(audio_bytes), format="wav")
       duration = len(audio) / 1000
       if duration < 10:
           st.warning("Uploaded audio file is less than 10 seconds. Please upload a file with a minimum duration of 10 seconds.")
