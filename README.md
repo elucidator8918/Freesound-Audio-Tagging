@@ -1,5 +1,7 @@
 # Freesound-Audio-Tagging
 
+An explanation of the entirety of the competition can be found in this Medium Article - [Medium Read Link](https://medium.com/@forsomethingnewsid/multi-label-audio-classification-freesound-audio-tagging-2019-competition-7780e546e763)
+
 This case study is based on the Kaggle Competition: https://www.kaggle.com/c/freesound-audio-tagging-2019
 
 Notebook Contents - 
