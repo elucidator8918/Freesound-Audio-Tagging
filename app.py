@@ -136,7 +136,7 @@ def process(clip, clip_dir=None):
     """
     # Decode WAV clip into waveform tensor.   
     #form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.read_file(clip))[0])
-    form_wave = tf.squeeze(tf.audio.decode_wav(audio_bytes)[0])
+    form_wave = tf.squeeze(tf.audio.decode_wav(clip)[0])
     # Convert waveform into spectrogram using a Short-Time Fourier Transform.
     # Note that tf.signal.stft() uses a periodic Hann window by default.
     window_length_samples = int(round(config.sampling_rate * config.stft_window_seconds))
