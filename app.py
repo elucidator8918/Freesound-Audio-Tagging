@@ -244,8 +244,8 @@ def main():
       audio_bytes = uploaded_file.read()
       st.audio(audio_bytes, format='audio/wav')
 
-      if st.button('Predict'):
-        features = process(X)
+      if st.button('Predict'):        
+        features = process(audio_bytes)
         model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
         prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
         prediction_sorted = np.argsort(prediction)
