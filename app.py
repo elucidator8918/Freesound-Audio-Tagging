@@ -137,8 +137,7 @@ def process(clip, clip_dir=None):
         tf.Tensor: Log mel spectrogram windowed features.
     """
     # Decode WAV clip into waveform tensor.   
-    #form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.read_file(clip))[0])
-    form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.decode_wav(clip).audio))
+    form_wave = tf.squeeze(tf.audio.decode_wav(tf.io.read_file(clip))[0])
     # Convert waveform into spectrogram using a Short-Time Fourier Transform.
     # Note that tf.signal.stft() uses a periodic Hann window by default.
     window_length_samples = int(round(config.sampling_rate * config.stft_window_seconds))
@@ -246,8 +245,11 @@ def main():
       audio_bytes = uploaded_file.read()
       st.audio(audio_bytes, format='audio/wav')
 
-      if st.button('Predict'):        
-        features = process(audio_bytes)
+      if st.button('Predict'):    
+        X = f"{uuid.uuid4()}.wav"
+        with open(X, 'wb') as audio_file:
+            audio_file.write(audio_bytes)
+        features = process(X)
         model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
         prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
         prediction_sorted = np.argsort(prediction)
@@ -256,6 +258,7 @@ def main():
         topfiveprob = prediction[prediction_sorted[-5:][::-1]]        
         result = pd.DataFrame({topfive[i]:topfiveprob[i] for i in range(5)},index=[0])
         st.markdown(result.to_markdown())
+        os.remove(X)
 
 if __name__=="__main__":
   main()
