@@ -1,8 +1,6 @@
 import numpy as np
 import pandas as pd
 import os
-from pydub import AudioSegment
-from io import BytesIO
 import uuid
 from sklearn.metrics import label_ranking_average_precision_score
 import tensorflow as tf
@@ -241,14 +239,34 @@ def main():
                     sorted in descending order.
   """  
   st.title('Audio Classification App')
+  sample_files = {
+    'Rain': '43023d54.wav',
+    'Singing': '43f2168e.wav',
+    'Crowd Noises': '44044585.wav'}
   uploaded_file = st.file_uploader("Upload Audio File", type=['wav'])
+  selected_file = st.selectbox("Select a sample file", list(sample_files.keys()))
 
   if uploaded_file is not None:
       audio_bytes = uploaded_file.read()
-      audio = AudioSegment.from_file(BytesIO(audio_bytes), format="wav")
-      duration = len(audio) / 1000
-      if duration < 10:
-          st.warning("Uploaded audio file is less than 10 seconds. Please upload a file with a minimum duration of 10 seconds.")
+      if st.button('Predict'):    
+        X = f"{uuid.uuid4()}.wav"
+        with open(X, 'wb') as audio_file:
+            audio_file.write(audio_bytes)
+        st.audio(X, format='audio/wav')
+        try:
+            features = process(X)            
+            model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
+            prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
+            prediction_sorted = np.argsort(prediction)
+            labmap = fetch_map(r'train_curated.csv')
+            topfive = [labmap[i] for i in prediction_sorted[-5:][::-1]]
+            topfiveprob = prediction[prediction_sorted[-5:][::-1]]        
+            result = pd.DataFrame({topfive[i]:topfiveprob[i] for i in range(5)},index=[0])
+            st.markdown(result.to_markdown())
+        finally:
+            os.remove(X)
+  elif selected_file is not None:
+      audio_bytes = open(sample_files[selected_file], "rb").read()     
       if st.button('Predict'):    
         X = f"{uuid.uuid4()}.wav"
         with open(X, 'wb') as audio_file:
