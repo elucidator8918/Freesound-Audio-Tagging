@@ -250,7 +250,6 @@ def main():
             audio_file.write(audio_bytes)
         st.audio(X, format='audio/wav')
         try:
-            features = process(X)
             model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
             prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
             prediction_sorted = np.argsort(prediction)
