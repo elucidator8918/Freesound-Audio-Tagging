@@ -1,5 +1,6 @@
 numpy
 pandas
 tensorflow
+pydub
 tabulate
 scikit-learn
