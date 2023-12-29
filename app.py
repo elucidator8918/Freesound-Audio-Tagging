@@ -249,16 +249,18 @@ def main():
         with open(X, 'wb') as audio_file:
             audio_file.write(audio_bytes)
         st.audio(X, format='audio/wav')
-        features = process(X)
-        model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
-        prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
-        prediction_sorted = np.argsort(prediction)
-        labmap = fetch_map(r'train_curated.csv')
-        topfive = [labmap[i] for i in prediction_sorted[-5:][::-1]]
-        topfiveprob = prediction[prediction_sorted[-5:][::-1]]        
-        result = pd.DataFrame({topfive[i]:topfiveprob[i] for i in range(5)},index=[0])
-        st.markdown(result.to_markdown())
-        os.remove(X)
+        try:
+            features = process(X)
+            model = cnnmodel(r"weights1_8-loss_0.0024_lwlrap_0.9922.h5")
+            prediction = np.average((1/(1+np.exp(-model.predict(features)))),axis=0)
+            prediction_sorted = np.argsort(prediction)
+            labmap = fetch_map(r'train_curated.csv')
+            topfive = [labmap[i] for i in prediction_sorted[-5:][::-1]]
+            topfiveprob = prediction[prediction_sorted[-5:][::-1]]        
+            result = pd.DataFrame({topfive[i]:topfiveprob[i] for i in range(5)},index=[0])
+            st.markdown(result.to_markdown())
+        finally:
+            os.remove(X)
 
 if __name__=="__main__":
   main()
